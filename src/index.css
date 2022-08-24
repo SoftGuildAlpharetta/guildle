@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.letter-in-word {
+  background-color: yellow;
+}
+
+.letter-correct {
+  background-color: green;
+}
