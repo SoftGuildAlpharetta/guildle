@@ -1,0 +1,1 @@
+export const zeroTo = (n) => [...Array(n).keys()];

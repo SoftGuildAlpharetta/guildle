@@ -3,8 +3,8 @@ const getLetterStyle = (idx, guessInfo) => {
     return idx === guessInfo.guessResults[idx].characterIndexInWord
       ? "tile letter-correct"
       : guessInfo.guessResults[idx].characterIndexInWord !== -1
-      ? "tile letter-in-word"
-      : "tile";
+        ? "tile letter-in-word"
+        : "tile";
   } catch (ex) {
     return "tile";
   }
@@ -12,7 +12,6 @@ const getLetterStyle = (idx, guessInfo) => {
 
 const LetterRow = ({ guessInfo }) => {
   const zeroToFiveArr = [...Array(5).keys()];
-  console.log(guessInfo.guessResults);
   return (
     <div className="flex-row">
       {zeroToFiveArr.map((idx) => {

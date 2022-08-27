@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #121213;
 }
 
 code {
@@ -12,10 +13,15 @@ code {
     monospace;
 }
 
-.letter-in-word {
-  background-color: yellow;
+i.bx {
+  font-size: 35px;
+  margin: 0.2em 0.2em;
 }
 
-.letter-correct {
-  background-color: green;
+i.bx:hover {
+  cursor: pointer;
+}
+
+a {
+  color: unset;
 }
