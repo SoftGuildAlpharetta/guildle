@@ -1,22 +1,12 @@
 import "./App.css";
 import { createContext, useContext, useEffect, useState } from "react";
-import { zeroTo, randomNumberInRange } from "./utils";
+import { zeroTo, randomNumberInRange, todayKey } from "./utils";
 import LetterRow from "./LetterRow";
 import Keycap from "./Keycap";
 import { WORD_LIST_URL, QWERTY_ARRAY } from "./constants";
 import { GameState, Guess } from "./interfaces";
 
 function App() {
-  const date = new Date();
-  const todayKey = `${date.getUTCFullYear()}-${
-    date.getUTCMonth().toString().length < 2
-      ? "0" + date.getUTCMonth()
-      : date.getUTCMonth()
-  }-${
-    date.getUTCDate().toString().length < 2
-      ? "0" + date.getUTCDate()
-      : date.getUTCDate()
-  }`;
   const [gameState, updateGameState] = useState<GameState>({
     guesses: zeroTo(6).map((index) => ({
       isActive: index === 0,
@@ -35,7 +25,6 @@ function App() {
       <WordleContext.Provider value={{}}>{children}</WordleContext.Provider>
     );
   }
-
   const setGuesses = (guesses: Guess[]) => {
     console.log(guesses);
     updateGameState({ ...gameState, guesses });
@@ -100,17 +89,19 @@ function App() {
     });
     if (guessValue.length === 5 && checkWordInWordList(guessValue)) {
       setGuesses(
-        wordleContext[todayKey].guesses.map((val: Guess, idx: number, _arr: Guess[]) => {
-          console.log("today");
-          if (idx === isActiveIndex) {
-            val.isActive = false;
-            val.guessResults = guessResults;
+        wordleContext[todayKey].guesses.map(
+          (val: Guess, idx: number, _arr: Guess[]) => {
+            console.log("today");
+            if (idx === isActiveIndex) {
+              val.isActive = false;
+              val.guessResults = guessResults;
+            }
+            if (idx === isActiveIndex + 1) {
+              val.isActive = true;
+            }
+            return val;
           }
-          if (idx === isActiveIndex + 1) {
-            val.isActive = true;
-          }
-          return val;
-        })
+        )
       );
       if (wordleContext[todayKey].wordOfTheDay === guessValue) {
         alert("Correct!");
