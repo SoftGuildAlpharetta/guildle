@@ -14,4 +14,14 @@ export const todayKey = `${date.getUTCFullYear()}-${
     : date.getUTCDate()
 }`;
 
+export const isEmptyObject = (obj: any) => {
+  try {
+    return !(Object.keys(obj).length > 0);
+  } catch(_) {
+    return (typeof obj === 'object' || typeof obj === 'undefined') && true;
+  }
+}
 
+export const isEmptyString = (obj: any) => typeof obj === 'string' && obj === '';
+
+export const isEmpty = (obj: any) => obj === undefined || obj === null || isEmptyObject(obj) || isEmptyString(obj);
