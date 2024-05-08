@@ -13,20 +13,20 @@ import { WORD_LIST_URL, QWERTY_ARRAY } from "./constants";
 import { GameState, Guess } from "./interfaces";
 
 function App() {
-  const getInitialWordleContext = () => {
+  const getInitialGuildleContext = () => {
     try {
-      const wordleContext = JSON.parse(
-        localStorage.getItem("wordleGameState")!
+      const guildleContext = JSON.parse(
+        localStorage.getItem("guildleGameState")!
       );
-      return wordleContext || {};
+      return guildleContext || {};
     } catch (ex) {
       return {};
     }
   };
   const getInitialGameState = () => {
-    const wordleContext = getInitialWordleContext();
-    if (!isEmptyObject(wordleContext[todayKey])) {
-      return wordleContext[todayKey];
+    const guildleContext = getInitialGuildleContext();
+    if (!isEmptyObject(guildleContext[todayKey])) {
+      return guildleContext[todayKey];
     }
     return {
       guesses: zeroTo(6).map((index) => ({
@@ -37,16 +37,28 @@ function App() {
       wordOfTheDay: "",
     };
   };
+  const getWordsArray = (): string[] => {
+    try {
+      const guildleContext = JSON.parse(
+        localStorage.getItem("guildleWordsArray")!
+      );
+      return guildleContext || {};
+    } catch (ex) {
+      return [];
+    }
+  };
+
   const [gameState, updateGameState] = useState<GameState>(getInitialGameState);
-  const wordleContext: Record<string, any> = getInitialWordleContext();
-  wordleContext[todayKey] = gameState;
+  const guildleContext: Record<string, any> = getInitialGuildleContext();
+  const [wordsArray, setWordsArray] = useState(getWordsArray);
+  guildleContext[todayKey] = gameState;
 
   const setGuesses = (guesses: Guess[]) => {
     updateGameState({ ...gameState, guesses });
   };
   const setCurrentGuess = (newGuess: string) =>
     setGuesses(
-      wordleContext[todayKey].guesses.map((guess: Guess) =>
+      guildleContext[todayKey].guesses.map((guess: Guess) =>
         guess.isActive ? { ...guess, word: newGuess } : { ...guess }
       )
     );
@@ -54,14 +66,12 @@ function App() {
     isEmpty(gameState.wordOfTheDay)
       ? updateGameState({ ...gameState, wordOfTheDay })
       : gameState;
-  const setWordsArray = (wordsArray: string[]) =>
-    (wordleContext.wordsArray = wordsArray);
 
   const setGameOver = (gameOver: boolean) =>
     updateGameState({ ...gameState, gameOver });
 
   const handleKeyPush = (letter: string) => {
-    const guess = wordleContext[todayKey].guesses.find(
+    const guess = guildleContext[todayKey].guesses.find(
       (guess: Guess) => guess.isActive
     ).word;
     const newGuess = guess + letter;
@@ -69,7 +79,7 @@ function App() {
   };
 
   const handleBackspace = (_ev: KeyboardEvent | React.MouseEvent) => {
-    const guess = wordleContext[todayKey].guesses.find(
+    const guess = guildleContext[todayKey].guesses.find(
       (x: Guess) => x.isActive
     ).word;
     const guessLength = guess.length;
@@ -107,30 +117,30 @@ function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("wordleGameState", JSON.stringify(wordleContext));
-  }, [wordleContext]);
+    localStorage.setItem("guildleGameState", JSON.stringify(guildleContext));
+  }, [guildleContext]);
 
   useEffect(() => {
-    wordleContext[todayKey] = gameState;
+    guildleContext[todayKey] = gameState;
   }, [gameState]);
 
   const checkGuess = () => {
-    const isGameOver = wordleContext[todayKey].gameOver;
+    const isGameOver = guildleContext[todayKey].gameOver;
     if (!isGameOver) {
-      const guessValue = wordleContext[todayKey].guesses.find(
+      const guessValue = guildleContext[todayKey].guesses.find(
         (guess: Guess) => guess.isActive
       ).word;
-      let isActiveIndex = wordleContext[todayKey].guesses.findIndex(
+      let isActiveIndex = guildleContext[todayKey].guesses.findIndex(
         (guess: Guess) => guess.isActive
       );
       const guessResults = guessValue.split("").map((character: string) => {
         const characterIndexInWord =
-          wordleContext[todayKey].wordOfTheDay.indexOf(character);
+          guildleContext[todayKey].wordOfTheDay.indexOf(character);
         return { characterIndexInWord, characterValue: character };
       });
       if (guessValue.length === 5 && checkWordInWordList(guessValue)) {
         setGuesses(
-          wordleContext[todayKey].guesses.map(
+          guildleContext[todayKey].guesses.map(
             (val: Guess, idx: number, _arr: Guess[]) => {
               if (idx === isActiveIndex) {
                 val.isActive = false;
@@ -143,7 +153,7 @@ function App() {
             }
           )
         );
-        if (wordleContext[todayKey].wordOfTheDay === guessValue) {
+        if (guildleContext[todayKey].wordOfTheDay === guessValue) {
           // TODO: show popover, remove key events, remove styling from keycaps, set game over = true
           // alert("Correct!");
           setGameOver(true);
@@ -158,7 +168,7 @@ function App() {
   };
 
   const checkWordInWordList = (guessValue: string) =>
-    wordleContext.wordsArray.indexOf(guessValue) !== -1;
+    wordsArray.indexOf(guessValue) !== -1;
 
   const shakeCurrentRow = () => {};
 
@@ -205,7 +215,7 @@ function App() {
           {zeroTo(6).map((index) => (
             <LetterRow
               key={"letterRow" + index}
-              guessInfo={wordleContext[todayKey].guesses[index]}
+              guessInfo={guildleContext[todayKey].guesses[index]}
             />
           ))}
         </div>
@@ -261,7 +271,7 @@ function App() {
               id="guess-input"
               maxLength={5}
               value={
-                wordleContext[todayKey].guesses.filter(
+                guildleContext[todayKey].guesses.filter(
                   (guess: Guess) => guess.isActive
                 ).word
               }
