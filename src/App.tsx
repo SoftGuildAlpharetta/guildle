@@ -35,14 +35,15 @@ function App() {
       })),
       gameOver: false,
       wordOfTheDay: "",
+      lettersUsedAlready: {},
     };
   };
   const getWordsArray = (): string[] => {
     try {
-      const guildleContext = JSON.parse(
+      const guildWordsArray = JSON.parse(
         localStorage.getItem("guildleWordsArray")!
       );
-      return guildleContext || {};
+      return guildWordsArray || [];
     } catch (ex) {
       return [];
     }
@@ -62,6 +63,22 @@ function App() {
         guess.isActive ? { ...guess, word: newGuess } : { ...guess }
       )
     );
+  const toggleShakeRowOn = () => {
+    setGuesses(
+      guildleContext[todayKey].guesses.map((guess: Guess) =>
+        guess.isActive ? { ...guess, isGuessNotInWordList: true } : { ...guess }
+      )
+    );
+  };
+  const toggleShakeRowOff = () => {
+    setGuesses(
+      guildleContext[todayKey].guesses.map((guess: Guess) =>
+        guess.isActive
+          ? { ...guess, isGuessNotInWordList: false }
+          : { ...guess }
+      )
+    );
+  };
   const setWordOfTheDay = (wordOfTheDay: string) =>
     isEmpty(gameState.wordOfTheDay)
       ? updateGameState({ ...gameState, wordOfTheDay })
@@ -91,16 +108,22 @@ function App() {
   };
 
   useEffect(() => {
-    // Just do it no matter what. Not worth fighting good caching.
-    fetch(WORD_LIST_URL)
-      .then((response) => response.text())
-      .then((text) => {
-        const wordsArr = text.split("\n");
-        setWordsArray(wordsArr);
-        const wordOfTheDay = wordsArr[randomNumberInRange(wordsArr.length)];
-        setWordOfTheDay(wordOfTheDay);
-      })
-      .catch((err) => console.error(err));
+    const localWordsArray = getWordsArray();
+    if (isEmpty(localWordsArray)) {
+      fetch(WORD_LIST_URL)
+        .then((response) => response.text())
+        .then((text) => {
+          const wordsArr = text.split("\n");
+          setWordsArray(wordsArr);
+          const wordOfTheDay = wordsArr[randomNumberInRange(wordsArr.length)];
+          setWordOfTheDay(wordOfTheDay);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      const wordOfTheDay =
+        localWordsArray[randomNumberInRange(localWordsArray.length)];
+      setWordOfTheDay(wordOfTheDay);
+    }
   }, []);
 
   useEffect(() => {
@@ -119,6 +142,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("guildleGameState", JSON.stringify(guildleContext));
   }, [guildleContext]);
+
+  useEffect(() => {
+    localStorage.setItem("guildleWordsArray", JSON.stringify(wordsArray));
+  }, [wordsArray]);
 
   useEffect(() => {
     guildleContext[todayKey] = gameState;
@@ -162,7 +189,9 @@ function App() {
         (document.getElementById("guess-input") as HTMLInputElement)!.value =
           "";
       } else {
-        shakeCurrentRow();
+        shakeCurrentRow(
+          guessValue.length === 5 ? "not-in-list" : "not-enough-letters"
+        );
       }
     }
   };
@@ -170,7 +199,23 @@ function App() {
   const checkWordInWordList = (guessValue: string) =>
     wordsArray.indexOf(guessValue) !== -1;
 
-  const shakeCurrentRow = () => {};
+  const shakeCurrentRow = (toastId: string) => {
+    showToast(toastId);
+    toggleShakeRowOn();
+    setTimeout(() => {
+      toggleShakeRowOff();
+      hideToast(toastId);
+    }, 1000);
+  };
+
+  const showToast = (toastId: string) => {
+    const el = document.getElementById(toastId)!;
+    el.setAttribute("style", "opacity: 100%;");
+  };
+  const hideToast = (toastId: string) => {
+    const el = document.getElementById(toastId)!;
+    el.setAttribute("style", "");
+  };
 
   const keyHandler = (ev: KeyboardEvent) => {
     if (ev instanceof KeyboardEvent) {
@@ -210,6 +255,8 @@ function App() {
           <i className="bx bx-cog"></i>
         </div>
       </header>
+      <div id="not-enough-letters" className="toast">Not enough letters</div>
+      <div id="not-in-list" className="toast">Not in word list</div>
       <div className="flex-container">
         <div className="board-container">
           {zeroTo(6).map((index) => (
@@ -228,6 +275,9 @@ function App() {
                   key={"keycap-" + firstTen[index]}
                   keyPushed={handleKeyPush}
                   keyLetter={firstTen[index]}
+                  letterUsedAlready={
+                    gameState.lettersUsedAlready[firstTen[index]]
+                  }
                 />
               );
             })}
@@ -241,6 +291,9 @@ function App() {
                   key={"keycap-" + secondNine[index]}
                   keyPushed={handleKeyPush}
                   keyLetter={secondNine[index]}
+                  letterUsedAlready={
+                    gameState.lettersUsedAlready[secondNine[index]]
+                  }
                 />
               );
             })}
@@ -257,6 +310,9 @@ function App() {
                   key={"keycap-" + thirdTen[index]}
                   keyPushed={handleKeyPush}
                   keyLetter={thirdTen[index]}
+                  letterUsedAlready={
+                    gameState.lettersUsedAlready[thirdTen[index]]
+                  }
                 />
               );
             })}
@@ -270,6 +326,7 @@ function App() {
             <input
               id="guess-input"
               maxLength={5}
+              autoComplete="off"
               value={
                 guildleContext[todayKey].guesses.filter(
                   (guess: Guess) => guess.isActive

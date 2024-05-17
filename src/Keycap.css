@@ -1,0 +1,42 @@
+.keycap {
+  border: #3a3a3c solid 1px;
+  height: 58px;
+  width: 58px;
+  flex: 1;
+  justify-content: center;
+  line-height: 4rem;
+  margin: 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.keycap:hover,
+.keycap-wide:hover {
+  cursor: pointer;
+}
+
+.keycap-wide {
+  border: #3a3a3c solid 1px;
+  background-color: #818384;
+  height: 58px;
+  width: 120px;
+  flex: 1;
+  justify-content: center;
+  line-height: 4rem;
+  margin: 0 0.5rem;
+}
+
+.keycap-not-guessed-yet {
+  background-color: #818384;
+}
+
+.keycap-correct {
+  background-color: rgb(83, 141, 78);
+}
+
+.keycap-in-word {
+  background-color: rgb(181, 159, 59);
+}
+
+.keycap-not-in-word {
+  background-color: rgb(58, 58, 60);
+}

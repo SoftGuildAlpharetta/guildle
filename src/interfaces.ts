@@ -1,7 +1,9 @@
 export interface Guess {
   isActive: boolean;
   word: string;
-  guessResults?: GuessMap;
+  guessResults?: GuessMap[];
+  isGuessProcessing?: boolean;
+  isGuessNotInWordList?: boolean;
 }
 
 export interface GuessMap {
@@ -14,4 +16,7 @@ export interface GameState {
   wordOfTheDay: string;
   wordsArray?: string[];
   gameOver: boolean;
+  lettersUsedAlready: Record<string, LetterUsedIndicator>
 }
+
+export type LetterUsedIndicator = 'correct' | 'in-word' | 'not-in-word' | 'not-guessed-yet'

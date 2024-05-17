@@ -34,10 +34,72 @@
   text-transform: uppercase;
 }
 
+.tile1 {
+  animation-delay: 100ms;
+}
+
+.tile2 {
+  animation-delay: 200ms;
+}
+
+.tile3 {
+  animation-delay: 300ms;
+}
+
+.tile4 {
+  animation-delay: 400ms;
+}
+
+.tile5 {
+  animation-delay: 500ms;
+}
+
 .letter-in-word {
-  background-color: #b59f3b;
+  background-color: rgb(181, 159, 59);
 }
 
 .letter-correct {
-  background-color: #538d4e;
+  background-color: rgb(83, 141, 78);
+}
+
+@keyframes letter-rotate-vertical {
+  from {
+    transform: rotateX(0turn);
+  }
+
+  to {
+    transform: rotateX(1turn);
+  }
+}
+
+.letter-rotate {
+  animation: letter-rotate-vertical 1s linear infinite;
+}
+
+@keyframes shaking-row {
+  from {
+    transform: translateX(0px);
+  }
+  10% {
+    transform: translateX(2px);
+  }
+  20% {
+    transform: translateX(4px);
+  }
+  40% {
+    transform: translateX(0px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(-4px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+.row-shake {
+  animation: shaking-row .3s linear infinite;
 }
