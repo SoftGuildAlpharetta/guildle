@@ -238,6 +238,23 @@ function App() {
     }
   };
 
+  const toggleHamburgerModal = (ev: React.MouseEvent<HTMLDivElement>) => {
+    const burgerModal = document.getElementById("hamburger-modal");
+    const burgerModalClassList = burgerModal?.classList;
+    burgerModal?.setAttribute(
+      "class",
+      burgerModalClassList?.contains("modal-open")
+        ? "modal-closed"
+        : "modal-open"
+    );
+  };
+
+  const goToGithubPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    window
+      .open("https://github.com/SoftGuildAlpharetta/guildle", "_blank")
+      ?.focus();
+  };
+
   if (!gameState.gameOver) {
     document.onkeydown = keyHandler;
   }
@@ -245,7 +262,7 @@ function App() {
   return (
     <div className="App">
       <header id="app-nav">
-        <div id="app-hamburger">
+        <div id="app-hamburger" onClick={toggleHamburgerModal}>
           <i className="bx bx-menu"></i>
         </div>
         <div id="app-title">Guildle</div>
@@ -255,8 +272,31 @@ function App() {
           <i className="bx bx-cog"></i>
         </div>
       </header>
-      <div id="not-enough-letters" className="toast">Not enough letters</div>
-      <div id="not-in-list" className="toast">Not in word list</div>
+      <section id="hamburger-modal" className="modal-closed">
+        <nav>
+          <div id="more-games-container">
+            <p>More Games</p>
+            <p onClick={toggleHamburgerModal}>
+              <i className="bx bx-x"></i>
+            </p>
+          </div>
+          <div id="game-spacer">
+            <p>More games coming soon!</p>
+          </div>
+        </nav>
+        <div id="modal-btn-container">
+          <button onClick={goToGithubPage}>
+            <i className="bx bx-star"></i> on <i className="bx bxl-github"></i>
+          </button>
+          <button>Hire me!</button>
+        </div>
+      </section>
+      <div id="not-enough-letters" className="toast">
+        Not enough letters
+      </div>
+      <div id="not-in-list" className="toast">
+        Not in word list
+      </div>
       <div className="flex-container">
         <div className="board-container">
           {zeroTo(6).map((index) => (

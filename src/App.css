@@ -105,3 +105,52 @@ i.bx {
   transform: translateX(-50%);
   transition: opacity 0.2s ease-in-out;
 }
+
+#hamburger-modal {
+  display: block;
+  transition: all ease-in-out 0.5s;
+  position: absolute;
+  width: 24rem;
+  text-align: left;
+}
+
+#hamburger-modal.modal-closed {
+  opacity: 0%;
+  left: -5rem;
+  height: 0;
+}
+
+#hamburger-modal.modal-open {
+  opacity: 100%;
+  left: 0rem;
+}
+
+#hamburger-modal > nav {
+  height: 25rem;
+  overflow-y: scroll;
+}
+
+#modal-btn-container {
+  background-color: #3a3a42;
+  text-align: center;
+}
+
+#modal-btn-container > button {
+  height: 50%;
+  margin: 0 0.09rem;
+  width: 11.5rem;
+  position: sticky;
+}
+
+#game-spacer {
+  margin-bottom: 95%;
+}
+
+#more-games-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+#more-games-container > p > i {
+  font-size: 2rem;
+}
