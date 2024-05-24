@@ -341,10 +341,11 @@ function App() {
           break;
       }
     } else {
+      // Do nothing I guess?
     }
   };
 
-  const toggleHamburgerModal = (ev: React.MouseEvent<HTMLDivElement>) => {
+  const toggleHamburgerModal = (_: React.MouseEvent<HTMLDivElement>) => {
     const burgerModal = document.getElementById("hamburger-modal");
     const burgerModalClassList = burgerModal?.classList;
     burgerModal?.setAttribute(
@@ -367,7 +368,7 @@ function App() {
   const dismissModal: MouseEventHandler<HTMLDivElement> = (
     ev: React.MouseEvent<HTMLDivElement>
   ) => {
-    const modal = ev.target?.closest("dialog") as HTMLDialogElement;
+    const modal = (ev.target as HTMLElement).closest("dialog") as HTMLDialogElement;
     modal.close();
   };
 
