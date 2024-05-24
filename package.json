@@ -1,7 +1,6 @@
 {
   "name": "guildle-replacement",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -13,6 +12,9 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
