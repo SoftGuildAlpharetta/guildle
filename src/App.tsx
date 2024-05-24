@@ -1,16 +1,47 @@
+// TODO: Break this component down into smaller components.
 import "./App.css";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import {
   zeroTo,
-  randomNumberInRange,
+  randomNumberInRangeForDate,
   todayKey,
   isEmptyObject,
   isEmpty,
+  mobileAndTabletCheck,
+  randomNumberInRange,
 } from "./utils";
 import LetterRow from "./LetterRow";
 import Keycap from "./Keycap";
 import { WORD_LIST_URL, QWERTY_ARRAY } from "./constants";
-import { GameState, Guess } from "./interfaces";
+import { GameState, Guess, GuessMap, LetterUsedIndicator } from "./interfaces";
+
+const getRandomSuccessWord = () => {
+  const successWords: string[] = [
+    "Awesome",
+    "Great",
+    "Correct",
+    "Hooray",
+    "Fantastic",
+    "Excellent",
+    "Bravo",
+    "Well done",
+    "Nice",
+    "Superb",
+    "Wonderful",
+    "Yay",
+    "Right",
+    "Perfect",
+    "Good job",
+    "Splendid",
+    "Magnificent",
+    "Outstanding",
+    "Impressive",
+    "Kudos",
+  ];
+  return `${successWords[randomNumberInRange(successWords.length)]}!`;
+};
+
+const successWord = getRandomSuccessWord();
 
 function App() {
   const getInitialGuildleContext = () => {
@@ -84,6 +115,17 @@ function App() {
       ? updateGameState({ ...gameState, wordOfTheDay })
       : gameState;
 
+  const setIsGuessProcessing = (
+    gameState: GameState,
+    isGuessProcessing: boolean
+  ) =>
+    updateGameState({
+      ...gameState,
+      guesses: gameState.guesses.map((guess: Guess) =>
+        guess.isActive ? { ...guess, isGuessProcessing } : guess
+      ),
+    });
+
   const setGameOver = (gameOver: boolean) =>
     updateGameState({ ...gameState, gameOver });
 
@@ -107,6 +149,17 @@ function App() {
     setCurrentGuess(newGuess);
   };
 
+  const getLetterUsedIndicator: (
+    wordOfTheDay: string,
+    characterGuess: string,
+    characterIndex: number
+  ) => LetterUsedIndicator = (wordOfTheDay, characterGuess, characterIndex) =>
+    wordOfTheDay.charAt(characterIndex) === characterGuess
+      ? "correct"
+      : wordOfTheDay.indexOf(characterGuess) !== -1
+      ? "in-word"
+      : "not-in-word";
+
   useEffect(() => {
     const localWordsArray = getWordsArray();
     if (isEmpty(localWordsArray)) {
@@ -115,28 +168,41 @@ function App() {
         .then((text) => {
           const wordsArr = text.split("\n");
           setWordsArray(wordsArr);
-          const wordOfTheDay = wordsArr[randomNumberInRange(wordsArr.length)];
+          const wordOfTheDay =
+            wordsArr[randomNumberInRangeForDate(wordsArr.length)];
           setWordOfTheDay(wordOfTheDay);
         })
         .catch((err) => console.error(err));
     } else {
       const wordOfTheDay =
-        localWordsArray[randomNumberInRange(localWordsArray.length)];
+        localWordsArray[randomNumberInRangeForDate(localWordsArray.length)];
       setWordOfTheDay(wordOfTheDay);
+    }
+    if (
+      !guildleContext[todayKey].guesses
+        .map((x: { isActive: any }) => x.isActive)
+        .find((x: boolean) => x === true)
+    ) {
+      setGameOver(true);
+    }
+    if (gameState.gameOver) {
+      showToast("game-over");
     }
   }, []);
 
   useEffect(() => {
-    const guessInput = (document.getElementById(
-      "guess-input"
-    ) as HTMLInputElement)!;
-    const onLeavingInputHandler = (ev: FocusEvent) => {
-      ev.preventDefault();
+    if (!mobileAndTabletCheck()) {
+      const guessInput = (document.getElementById(
+        "guess-input"
+      ) as HTMLInputElement)!;
+      const onLeavingInputHandler = (ev: FocusEvent) => {
+        ev.preventDefault();
+        guessInput.focus();
+      };
+      guessInput.onblur = onLeavingInputHandler;
+      guessInput.onfocus = onLeavingInputHandler;
       guessInput.focus();
-    };
-    guessInput.onblur = onLeavingInputHandler;
-    guessInput.onfocus = onLeavingInputHandler;
-    guessInput.focus();
+    }
   });
 
   useEffect(() => {
@@ -160,34 +226,74 @@ function App() {
       let isActiveIndex = guildleContext[todayKey].guesses.findIndex(
         (guess: Guess) => guess.isActive
       );
-      const guessResults = guessValue.split("").map((character: string) => {
-        const characterIndexInWord =
-          guildleContext[todayKey].wordOfTheDay.indexOf(character);
-        return { characterIndexInWord, characterValue: character };
-      });
+      const guessResults = guessValue
+        .split("")
+        .map((character: string, index: number, arr: string[]) => {
+          const characterIndexInWord =
+            arr[index] === guildleContext[todayKey].wordOfTheDay.charAt(index)
+              ? index
+              : guildleContext[todayKey].wordOfTheDay.indexOf(character);
+          return {
+            characterIndexInWord,
+            characterValue: character,
+            isLetterUsedInWord: getLetterUsedIndicator(
+              guildleContext[todayKey].wordOfTheDay,
+              character,
+              index
+            ),
+          } as GuessMap;
+        });
       if (guessValue.length === 5 && checkWordInWordList(guessValue)) {
-        setGuesses(
-          guildleContext[todayKey].guesses.map(
+        const newGameState = {
+          ...gameState,
+          lettersUsedAlready: Object.assign(
+            { ...gameState.lettersUsedAlready },
+            guessResults.reduce(
+              (
+                accumulator: Record<string, LetterUsedIndicator>,
+                currentValue: GuessMap
+              ) => {
+                accumulator[currentValue.characterValue] =
+                  currentValue.isLetterUsedInWord!;
+                return accumulator;
+              },
+              {}
+            )
+          ),
+          guesses: guildleContext[todayKey].guesses.map(
             (val: Guess, idx: number, _arr: Guess[]) => {
               if (idx === isActiveIndex) {
                 val.isActive = false;
                 val.guessResults = guessResults;
+                val.isGuessProcessing = true;
               }
               if (idx === isActiveIndex + 1) {
                 val.isActive = true;
               }
               return val;
             }
-          )
-        );
+          ),
+        };
+        updateGameState(newGameState);
+        setTimeout(() => setIsGuessProcessing(newGameState, false), 1500);
         if (guildleContext[todayKey].wordOfTheDay === guessValue) {
-          // TODO: show popover, remove key events, remove styling from keycaps, set game over = true
-          // alert("Correct!");
+          showToast("success");
+          setTimeout(() => hideToast("success"), 2000);
           setGameOver(true);
           document.onkeydown = null;
         }
-        (document.getElementById("guess-input") as HTMLInputElement)!.value =
-          "";
+        if (
+          !guildleContext[todayKey].guesses
+            .map((x: { isActive: any }) => x.isActive)
+            .find((x: boolean) => x === true)
+        ) {
+          showToast("game-over");
+          setGameOver(true);
+        }
+        if (!mobileAndTabletCheck()) {
+          (document.getElementById("guess-input") as HTMLInputElement).value =
+            "";
+        }
       } else {
         shakeCurrentRow(
           guessValue.length === 5 ? "not-in-list" : "not-enough-letters"
@@ -249,13 +355,23 @@ function App() {
     );
   };
 
-  const goToGithubPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
-    window
-      .open("https://github.com/SoftGuildAlpharetta/guildle", "_blank")
-      ?.focus();
+  const goToPage = (url: string) => {
+    window.open(url, "_blank")?.focus();
   };
 
-  if (!gameState.gameOver) {
+  const openModal = (type: string) => {
+    const modal = document.getElementById(type);
+    (modal as HTMLDialogElement).showModal();
+  };
+
+  const dismissModal: MouseEventHandler<HTMLDivElement> = (
+    ev: React.MouseEvent<HTMLDivElement>
+  ) => {
+    const modal = ev.target?.closest("dialog") as HTMLDialogElement;
+    modal.close();
+  };
+
+  if (!gameState.gameOver && !mobileAndTabletCheck()) {
     document.onkeydown = keyHandler;
   }
 
@@ -267,15 +383,22 @@ function App() {
         </div>
         <div id="app-title">Guildle</div>
         <div id="app-options">
-          <i className="bx bx-help-circle"></i>
-          <i className="bx bx-bar-chart-alt-2"></i>
-          <i className="bx bx-cog"></i>
+          <i
+            className="bx bx-help-circle"
+            onClick={() => openModal("how-to-play")}
+          ></i>
+          <i
+            className="bx bx-bar-chart-alt-2"
+            onClick={() => openModal("stats")}
+          ></i>
+          <i className="bx bx-cog" onClick={() => openModal("settings")}></i>
         </div>
       </header>
+      {/* #region Hideables */}
       <section id="hamburger-modal" className="modal-closed">
         <nav>
           <div id="more-games-container">
-            <p>More Games</p>
+            <h2>More Games</h2>
             <p onClick={toggleHamburgerModal}>
               <i className="bx bx-x"></i>
             </p>
@@ -285,10 +408,16 @@ function App() {
           </div>
         </nav>
         <div id="modal-btn-container">
-          <button onClick={goToGithubPage}>
+          <button
+            onClick={() =>
+              goToPage("https://github.com/SoftGuildAlpharetta/guildle")
+            }
+          >
             <i className="bx bx-star"></i> on <i className="bx bxl-github"></i>
           </button>
-          <button>Hire me!</button>
+          <button onClick={() => goToPage("https://smallbizdevops.com")}>
+            Hire me!
+          </button>
         </div>
       </section>
       <div id="not-enough-letters" className="toast">
@@ -297,6 +426,80 @@ function App() {
       <div id="not-in-list" className="toast">
         Not in word list
       </div>
+      <div id="success" className="toast">
+        {successWord}
+      </div>
+      <div id="game-over" className="toast">
+        {gameState.wordOfTheDay}
+      </div>
+      <dialog id="how-to-play" className="modal">
+        <div onClick={dismissModal}>
+          <i className="bx bx-x"></i>
+        </div>
+        <h2>How to play</h2>
+        <div>Guess the wordle in six tries.</div>
+        <ul>
+          <li>Each guess must be a valid five letter word.</li>
+          <li>
+            The tiles will change color to indicate how close you were to the
+            answer.
+          </li>
+        </ul>
+        <p>
+          <b>Examples</b>
+        </p>
+        <LetterRow
+          guessInfo={{
+            word: "birds",
+            isActive: false,
+            guessResults: [{ characterIndexInWord: 0, characterValue: "b" }],
+          }}
+        ></LetterRow>
+        <p>
+          The letter <b>B</b> is in the word and in the correct place.
+        </p>
+        <LetterRow
+          guessInfo={{
+            word: "cheat",
+            isActive: false,
+            guessResults: [
+              { characterIndexInWord: -1, characterValue: "z" },
+              { characterIndexInWord: -1, characterValue: "z" },
+              { characterIndexInWord: 3, characterValue: "e" },
+            ],
+          }}
+        ></LetterRow>
+        <p>
+          The letter <b>E</b> is in the word but not in the correct place.
+        </p>
+        <LetterRow
+          guessInfo={{
+            word: "naive",
+            isActive: false,
+            guessResults: [],
+          }}
+        ></LetterRow>
+        <p>
+          The letter <b>I</b> is neither in the word nor is it in the correct
+          place.
+        </p>
+        <p>A new puzzle is calculated every day, so come back and play!</p>
+      </dialog>
+      <dialog id="stats" className="modal">
+        <div onClick={dismissModal}>
+          <i className="bx bx-x"></i>
+        </div>
+        <h2>Stats</h2>
+        <p>Coming soon!</p>
+      </dialog>
+      <dialog id="settings" className="modal">
+        <div onClick={dismissModal}>
+          <i className="bx bx-x"></i>
+        </div>
+        <h2>Settings</h2>
+        <p>Coming soon!</p>
+      </dialog>
+      {/* #endregion */}
       <div className="flex-container">
         <div className="board-container">
           {zeroTo(6).map((index) => (
@@ -362,18 +565,22 @@ function App() {
           </div>
         </div>
         <div>
-          <div id="guess-input-hider">
-            <input
-              id="guess-input"
-              maxLength={5}
-              autoComplete="off"
-              value={
-                guildleContext[todayKey].guesses.filter(
-                  (guess: Guess) => guess.isActive
-                ).word
-              }
-            ></input>
-          </div>
+          {mobileAndTabletCheck() ? (
+            <div></div>
+          ) : (
+            <div id="guess-input-hider">
+              <input
+                id="guess-input"
+                maxLength={5}
+                autoComplete="off"
+                value={
+                  guildleContext[todayKey].guesses.filter(
+                    (guess: Guess) => guess.isActive
+                  ).word
+                }
+              ></input>
+            </div>
+          )}
         </div>
       </div>
     </div>

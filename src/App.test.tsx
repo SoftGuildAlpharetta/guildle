@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import App from './App'
 import { test, expect } from "vitest";
 import { WORD_LIST_URL } from "./constants";
-import { randomNumberInRange } from "./utils";
+import { randomNumberInRangeForDate } from "./utils";
 
 test("renders learn react link", async () => {
   render(<App />);
@@ -19,7 +19,7 @@ test("algo for random number in range", async () => {
     const today = new Date(2024, 4, i);
     wordsOfTheDayByDay.push({
       today: today.toDateString(),
-      wordOfTheDay: wordsArray[randomNumberInRange(wordsArray.length, today)],
+      wordOfTheDay: wordsArray[randomNumberInRangeForDate(wordsArray.length, today)],
     });
   }
   const wordsOfTheDay = wordsOfTheDayByDay

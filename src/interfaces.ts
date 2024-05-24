@@ -9,6 +9,7 @@ export interface Guess {
 export interface GuessMap {
   characterIndexInWord: number;
   characterValue: string;
+  isLetterUsedInWord?: LetterUsedIndicator;
 }
 
 export interface GameState {
@@ -16,7 +17,11 @@ export interface GameState {
   wordOfTheDay: string;
   wordsArray?: string[];
   gameOver: boolean;
-  lettersUsedAlready: Record<string, LetterUsedIndicator>
+  lettersUsedAlready: Record<string, LetterUsedIndicator>;
 }
 
-export type LetterUsedIndicator = 'correct' | 'in-word' | 'not-in-word' | 'not-guessed-yet'
+export type LetterUsedIndicator =
+  | "correct"
+  | "in-word"
+  | "not-in-word"
+  | "not-guessed-yet";

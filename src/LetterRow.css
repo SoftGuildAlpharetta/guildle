@@ -1,3 +1,104 @@
+/* #region Desktop styles */
+@media only screen and (min-width: 768px) {
+  .tile {
+    width: 4rem;
+    height: 4rem;
+    margin: 0.1rem 0.1rem;
+    border: #3a3a3c solid 1px;
+    color: white;
+    font-size: 2rem;
+    line-height: 4rem;
+    text-transform: uppercase;
+    transition: background-color linear 1s;
+  }
+
+  .tile1 {
+    animation-delay: 100ms;
+  }
+
+  .tile2 {
+    animation-delay: 200ms;
+  }
+
+  .tile3 {
+    animation-delay: 300ms;
+  }
+
+  .tile4 {
+    animation-delay: 400ms;
+  }
+
+  .tile5 {
+    animation-delay: 500ms;
+  }
+
+  .letter-in-word {
+    background-color: rgb(181, 159, 59);
+  }
+
+  .letter-correct {
+    background-color: rgb(83, 141, 78);
+  }
+}
+/* #endregion */
+@media screen and (max-width: 768px) {
+  .tile {
+    width: 2rem;
+    height: 2rem;
+    margin: 0.1rem 0.1rem;
+    border: #3a3a3c solid 1px;
+    color: white;
+    font-size: 1rem;
+    line-height: 2rem;
+    text-transform: uppercase;
+    transition: background-color linear 1s;
+  }
+
+  .tile1 {
+    animation-delay: 100ms;
+  }
+
+  .tile2 {
+    animation-delay: 200ms;
+  }
+
+  .tile3 {
+    animation-delay: 300ms;
+  }
+
+  .tile4 {
+    animation-delay: 400ms;
+  }
+
+  .tile5 {
+    animation-delay: 500ms;
+  }
+
+  .letter-in-word {
+    background-color: rgb(181, 159, 59);
+  }
+
+  .letter-correct {
+    background-color: rgb(83, 141, 78);
+  }
+}
+
+/* #region Animations */
+.letter-rotate {
+  animation: letter-rotate-vertical 1s linear;
+  animation-iteration-count: 1;
+}
+
+@keyframes letter-rotate-vertical {
+  from {
+    transform: rotateX(0turn);
+  }
+
+  to {
+    transform: rotateX(1turn);
+  }
+}
+
 .invalid-row {
   animation-name: invalid-row-shake;
   animation-duration: 600ms;
@@ -23,57 +124,8 @@
   }
 }
 
-.tile {
-  width: 65px;
-  height: 65px;
-  margin: 0.1rem 0.1rem;
-  border: #3a3a3c solid 1px;
-  color: white;
-  font-size: 40px;
-  line-height: 4rem;
-  text-transform: uppercase;
-}
-
-.tile1 {
-  animation-delay: 100ms;
-}
-
-.tile2 {
-  animation-delay: 200ms;
-}
-
-.tile3 {
-  animation-delay: 300ms;
-}
-
-.tile4 {
-  animation-delay: 400ms;
-}
-
-.tile5 {
-  animation-delay: 500ms;
-}
-
-.letter-in-word {
-  background-color: rgb(181, 159, 59);
-}
-
-.letter-correct {
-  background-color: rgb(83, 141, 78);
-}
-
-@keyframes letter-rotate-vertical {
-  from {
-    transform: rotateX(0turn);
-  }
-
-  to {
-    transform: rotateX(1turn);
-  }
-}
-
-.letter-rotate {
-  animation: letter-rotate-vertical 1s linear infinite;
+.row-shake {
+  animation: shaking-row 0.3s linear infinite;
 }
 
 @keyframes shaking-row {
@@ -100,6 +152,4 @@
   }
 }
 
-.row-shake {
-  animation: shaking-row .3s linear infinite;
-}
+/* #endregion */
