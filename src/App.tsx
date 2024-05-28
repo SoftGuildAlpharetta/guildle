@@ -15,6 +15,7 @@ import Keycap from "./Keycap";
 import { WORD_LIST_URL, QWERTY_ARRAY } from "./constants";
 import { GameState, Guess, GuessMap, LetterUsedIndicator } from "./interfaces";
 import profanity from "profane-words";
+import GuessChecker from "./GuessChecker";
 
 const getRandomSuccessWord = () => {
   const successWords: string[] = [
@@ -72,10 +73,10 @@ function App() {
   };
   const getWordsArray = (): string[] => {
     try {
-      const guildWordsArray = JSON.parse(
+      const guildleWordsArray = JSON.parse(
         localStorage.getItem("guildleWordsArray")!
       );
-      return guildWordsArray || [];
+      return guildleWordsArray || [];
     } catch (ex) {
       return [];
     }
@@ -150,17 +151,6 @@ function App() {
     setCurrentGuess(newGuess);
   };
 
-  const getLetterUsedIndicator: (
-    wordOfTheDay: string,
-    characterGuess: string,
-    characterIndex: number
-  ) => LetterUsedIndicator = (wordOfTheDay, characterGuess, characterIndex) =>
-    wordOfTheDay.charAt(characterIndex) === characterGuess
-      ? "correct"
-      : wordOfTheDay.indexOf(characterGuess) !== -1
-      ? "in-word"
-      : "not-in-word";
-
   useEffect(() => {
     const localWordsArray = getWordsArray();
     if (isEmpty(localWordsArray)) {
@@ -233,23 +223,10 @@ function App() {
       let isActiveIndex = guildleContext[todayKey].guesses.findIndex(
         (guess: Guess) => guess.isActive
       );
-      const guessResults = guessValue
-        .split("")
-        .map((character: string, index: number, arr: string[]) => {
-          const characterIndexInWord =
-            arr[index] === guildleContext[todayKey].wordOfTheDay.charAt(index)
-              ? index
-              : guildleContext[todayKey].wordOfTheDay.indexOf(character);
-          return {
-            characterIndexInWord,
-            characterValue: character,
-            isLetterUsedInWord: getLetterUsedIndicator(
-              guildleContext[todayKey].wordOfTheDay,
-              character,
-              index
-            ),
-          } as GuessMap;
-        });
+      const guessResults = GuessChecker.checkGuess(
+        guessValue,
+        guildleContext[todayKey].wordOfTheDay
+      );
       if (guessValue.length === 5 && checkWordInWordList(guessValue)) {
         const newGameState = {
           ...gameState,
@@ -462,7 +439,9 @@ function App() {
           guessInfo={{
             word: "birds",
             isActive: false,
-            guessResults: [{ characterIndexInWord: 0, characterValue: "b" }],
+            guessResults: [
+              { characterIndicesInWord: [0], characterValue: "b" },
+            ],
           }}
         ></LetterRow>
         <p>
@@ -473,9 +452,9 @@ function App() {
             word: "cheat",
             isActive: false,
             guessResults: [
-              { characterIndexInWord: -5, characterValue: "z" },
-              { characterIndexInWord: -5, characterValue: "z" },
-              { characterIndexInWord: 3, characterValue: "e" },
+              { characterIndicesInWord: [-5], characterValue: "z" },
+              { characterIndicesInWord: [-5], characterValue: "z" },
+              { characterIndicesInWord: [3], characterValue: "e" },
             ],
           }}
         ></LetterRow>

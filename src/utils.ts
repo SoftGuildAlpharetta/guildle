@@ -71,3 +71,13 @@ export const mobileAndTabletCheck = function () {
   })(navigator.userAgent || navigator.vendor || (window as any).opera);
   return check;
 };
+
+export const indices = (haystack: any[], needle: any): Array<number> => {
+  const indexAccumulator: number[] = [];
+  haystack.forEach((value, idx, _) => {
+    if (value === needle) {
+      indexAccumulator.push(idx);
+    }
+  });
+  return indexAccumulator;
+};

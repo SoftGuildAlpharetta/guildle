@@ -7,7 +7,7 @@ export interface Guess {
 }
 
 export interface GuessMap {
-  characterIndexInWord: number;
+  characterIndicesInWord: number[];
   characterValue: string;
   isLetterUsedInWord?: LetterUsedIndicator;
 }

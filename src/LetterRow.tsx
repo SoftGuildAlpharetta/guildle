@@ -4,11 +4,11 @@ const getLetterStyle = (idx: number, guessInfo: Guess) => {
   try {
     const guessResult = guessInfo.guessResults![idx];
     const initialClass =
-      idx === guessResult.characterIndexInWord
+      guessResult.isLetterUsedInWord === "correct"
         ? "tile letter-correct"
-        : guessResult.characterIndexInWord >= 0
+        : guessResult.isLetterUsedInWord === "in-word"
         ? "tile letter-in-word"
-        : guessResult.characterIndexInWord === -1
+        : guessResult.isLetterUsedInWord === "not-in-word"
         ? "tile letter-absent"
         : "tile";
     return initialClass + (guessInfo.isGuessProcessing ? " letter-rotate" : "");
