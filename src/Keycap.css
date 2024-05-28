@@ -1,3 +1,49 @@
+@media (prefers-color-scheme: light) {
+  .keycap {
+    color: black;
+    background-color: rgb(211, 214, 218);
+  }
+  .keycap-wide {
+    color: black;
+    background-color: rgb(211, 214, 218);
+  }
+  .keycap-correct {
+    color: white;
+    background-color: rgb(106, 170, 100);
+  }
+  .keycap-in-word {
+    background-color: rgb(181, 159, 59);
+    color: white;
+  }
+  .keycap-not-in-word {
+    background-color: rgb(120, 124, 126);
+    color: white;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .keycap {
+    color: white;
+  }
+  .keycap-not-guessed-yet {
+    background-color: #818384;
+  }
+  .keycap-wide {
+    color: white;
+    background-color: #818384;
+  }
+  .keycap-correct {
+    background-color: rgb(83, 141, 78);
+  }
+  .keycap-in-word {
+    background-color: rgb(181, 159, 59);
+  }
+
+  .keycap-not-in-word {
+    background-color: rgb(58, 58, 60);
+  }
+}
+
 @media only screen and (min-width: 768px) {
   .keycap {
     border: #3a3a3c solid 1px;
@@ -11,7 +57,6 @@
   }
   .keycap-wide {
     border: #3a3a3c solid 1px;
-    background-color: #818384;
     height: 58px;
     width: 120px;
     flex: 1;
@@ -39,27 +84,11 @@
 
 .keycap-wide {
   border: #3a3a3c solid 1px;
-  background-color: #818384;
+
   height: 58px;
   width: 120px;
   flex: 1;
   justify-content: center;
   line-height: 4rem;
   margin: 0 0.1rem;
-}
-
-.keycap-not-guessed-yet {
-  background-color: #818384;
-}
-
-.keycap-correct {
-  background-color: rgb(83, 141, 78);
-}
-
-.keycap-in-word {
-  background-color: rgb(181, 159, 59);
-}
-
-.keycap-not-in-word {
-  background-color: rgb(58, 58, 60);
 }

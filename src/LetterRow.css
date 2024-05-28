@@ -1,3 +1,37 @@
+/* #region Light/Dark styles */
+@media (prefers-color-scheme: light) {
+  .tile {
+    color: black;
+  }
+  .letter-absent {
+    background-color: rgb(120, 124, 126);
+    color: white;
+  }
+  .letter-in-word {
+    background-color: rgb(201, 180, 88);
+    color: white;
+  }
+  .letter-correct {
+    background-color: rgb(106, 170, 100);
+    color: white;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tile {
+    color: white;
+  }
+  .letter-absent {
+    background-color: rgb(58, 58, 60);
+  }
+  .letter-in-word {
+    background-color: rgb(181, 159, 59);
+  }
+  .letter-correct {
+    background-color: rgb(83, 141, 78);
+  }
+}
+/* #endregion */
 /* #region Desktop styles */
 @media only screen and (min-width: 768px) {
   .tile {
@@ -5,7 +39,6 @@
     height: 4rem;
     margin: 0.1rem 0.1rem;
     border: #3a3a3c solid 1px;
-    color: white;
     font-size: 2rem;
     line-height: 4rem;
     text-transform: uppercase;
@@ -31,14 +64,6 @@
   .tile5 {
     animation-delay: 500ms;
   }
-
-  .letter-in-word {
-    background-color: rgb(181, 159, 59);
-  }
-
-  .letter-correct {
-    background-color: rgb(83, 141, 78);
-  }
 }
 /* #endregion */
 @media screen and (max-width: 768px) {
@@ -47,7 +72,6 @@
     height: 2rem;
     margin: 0.1rem 0.1rem;
     border: #3a3a3c solid 1px;
-    color: white;
     font-size: 1rem;
     line-height: 2rem;
     text-transform: uppercase;
@@ -72,14 +96,6 @@
 
   .tile5 {
     animation-delay: 500ms;
-  }
-
-  .letter-in-word {
-    background-color: rgb(181, 159, 59);
-  }
-
-  .letter-correct {
-    background-color: rgb(83, 141, 78);
   }
 }
 

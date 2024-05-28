@@ -1,11 +1,63 @@
-/* Desktop styles */
-@media only screen and (min-width: 768px) {
+/* Light/Dark styles */
+@media (prefers-color-scheme: light) {
+  #app-nav {
+    color: black;
+    background-color: white;
+  }
+  .toast {
+    background-color: rgb(18, 18, 18);
+    color: rgb(255, 255, 255);
+  }
+  #hamburger-modal > nav {
+    background-color: white;
+  }
+  #modal-btn-container {
+    background-color: white;
+    border-top: 1px solid black;
+  }
+  #modal-btn-container > button {
+    background-color: black;
+    color: white;
+  }
+  #hamburger-modal.modal-open {
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2),
+      0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
   #app-nav {
     color: white;
+    background-color: #121213;
+  }
+  .toast {
+    background-color: rgb(248, 248, 248);
+    color: rgb(18, 18, 19);
+  }
+  #hamburger-modal > nav {
+    background-color: #242424;
+  }
+  #modal-btn-container {
+    background-color: #3a3a42;
+  }
+  #hamburger-modal.modal-open {
+    box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.15);
+  }
+}
+/* Desktop styles */
+@media only screen and (min-width: 768px) {
+  .board-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+  #app-nav {
     height: 3rem;
     width: 100%;
     text-align: center;
-    background-color: #121213;
     display: inline-block;
     border-bottom: 1px solid #3a3a3c;
     display: flex;
@@ -49,14 +101,28 @@
     z-index: 999;
   }
   #hamburger-modal > nav {
-    background-color: #242424;
-    margin-bottom: 20rem;
+    margin-bottom: 17rem;
     overflow-y: scroll;
+  }
+  #modal-btn-container > button {
+    height: 50%;
+    margin: 0.5rem 0.09rem;
+    width: 11.5rem;
+    position: sticky;
   }
 }
 
 /* Mobile Styles */
 @media only screen and (max-width: 768px) {
+  .board-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
   .flex-container {
     width: 100%;
     max-width: 650px;
@@ -74,11 +140,9 @@
     flex-grow: 2;
   }
   #app-nav {
-    color: white;
     height: 3rem;
     width: 100%;
     text-align: center;
-    background-color: #121213;
     display: inline-block;
     border-bottom: 1px solid #3a3a3c;
     display: flex;
@@ -106,8 +170,13 @@
     z-index: 999;
   }
   #hamburger-modal > nav {
-    background-color: #242424;
     overflow-y: scroll;
+  }
+  #modal-btn-container > button {
+    height: 50%;
+    margin: 1rem 0.09rem;
+    width: 10.5rem;
+    position: sticky;
   }
 }
 
@@ -118,15 +187,6 @@
 
 .flex-row {
   display: flex;
-}
-
-.board-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  overflow: hidden;
 }
 
 i.bx {
@@ -179,10 +239,8 @@ i.bx {
 .toast {
   opacity: 0%;
   position: absolute;
-  background-color: rgb(248, 248, 248);
   top: 4rem;
   left: 50%;
-  color: rgb(18, 18, 19);
   padding: 0.8rem;
   border-radius: 4px;
   transform: translateX(-50%);
@@ -205,18 +263,8 @@ i.bx {
   z-index: -999;
 }
 
-
-
 #modal-btn-container {
-  background-color: #3a3a42;
   text-align: center;
-  position: sticky;
-}
-
-#modal-btn-container > button {
-  height: 50%;
-  margin: 0 0.09rem;
-  width: 11.5rem;
   position: sticky;
 }
 
@@ -264,6 +312,6 @@ dialog[open] {
   text-align: center;
 }
 
-.modal > div.flex-row:nth-child(10) > div:nth-child(3) {
+.modal > div.flex-row:nth-child(10) > div:nth-child(4) {
   background-color: gray;
 }

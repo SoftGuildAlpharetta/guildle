@@ -464,8 +464,8 @@ function App() {
             word: "cheat",
             isActive: false,
             guessResults: [
-              { characterIndexInWord: -1, characterValue: "z" },
-              { characterIndexInWord: -1, characterValue: "z" },
+              { characterIndexInWord: -5, characterValue: "z" },
+              { characterIndexInWord: -5, characterValue: "z" },
               { characterIndexInWord: 3, characterValue: "e" },
             ],
           }}
@@ -481,7 +481,7 @@ function App() {
           }}
         ></LetterRow>
         <p>
-          The letter <b>I</b> is neither in the word nor is it in the correct
+          The letter <b>V</b> is neither in the word nor is it in the correct
           place.
         </p>
         <p>A new puzzle is calculated every day, so come back and play!</p>
