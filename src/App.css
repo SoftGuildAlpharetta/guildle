@@ -1,4 +1,4 @@
-/* Light/Dark styles */
+/* #region Light/Dark mode */
 @media (prefers-color-scheme: light) {
   #app-nav {
     color: black;
@@ -20,6 +20,7 @@
     color: white;
   }
   #hamburger-modal.modal-open {
+    transition: all ease-in-out 1.5s;
     box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2),
       0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
@@ -41,10 +42,12 @@
     background-color: #3a3a42;
   }
   #hamburger-modal.modal-open {
+    transition: all ease-in-out 1.5s;
     box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.15);
   }
 }
-/* Desktop styles */
+/* #endregion */
+/* #region Desktop styles */
 @media only screen and (min-width: 768px) {
   .board-container {
     display: flex;
@@ -111,8 +114,8 @@
     position: sticky;
   }
 }
-
-/* Mobile Styles */
+/* #endregion */
+/* #region Mobile Styles */
 @media only screen and (max-width: 768px) {
   .board-container {
     display: flex;
@@ -179,8 +182,8 @@
     position: sticky;
   }
 }
+/* #endregion */
 
-/* All styles */
 .App {
   text-align: center;
 }
@@ -257,9 +260,9 @@ i.bx {
 
 #hamburger-modal.modal-closed {
   opacity: 0%;
+  transition: all ease-in-out 1.5s;
   left: -5rem;
   height: 0;
-  display: none;
   z-index: -999;
 }
 

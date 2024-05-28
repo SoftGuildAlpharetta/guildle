@@ -66,6 +66,7 @@
   }
 }
 /* #endregion */
+/* #region Mobile styles */
 @media screen and (max-width: 768px) {
   .tile {
     width: 2rem;
@@ -98,7 +99,7 @@
     animation-delay: 500ms;
   }
 }
-
+/* #endregion */
 /* #region Animations */
 .letter-rotate {
   animation: letter-rotate-vertical 1s linear;

@@ -14,6 +14,7 @@ import LetterRow from "./LetterRow";
 import Keycap from "./Keycap";
 import { WORD_LIST_URL, QWERTY_ARRAY } from "./constants";
 import { GameState, Guess, GuessMap, LetterUsedIndicator } from "./interfaces";
+import profanity from "profane-words";
 
 const getRandomSuccessWord = () => {
   const successWords: string[] = [
@@ -165,11 +166,17 @@ function App() {
     if (isEmpty(localWordsArray)) {
       fetch(WORD_LIST_URL)
         .then((response) => response.text())
-        .then((text) => {
-          const wordsArr = text.split("\n");
-          setWordsArray(wordsArr);
+        .then((text) => text.split("\n"))
+        .then((wordsArr) => {
+          const profanityArr = profanity.filter(
+            (profane) => profane.length === 5
+          );
+          const profanityFreeWordsArr = wordsArr.filter(
+            (word) => !profanityArr.includes(word)
+          );
+          setWordsArray(profanityFreeWordsArr);
           const wordOfTheDay =
-            wordsArr[randomNumberInRangeForDate(wordsArr.length)];
+            profanityFreeWordsArr[randomNumberInRangeForDate(wordsArr.length)];
           setWordOfTheDay(wordOfTheDay);
         })
         .catch((err) => console.error(err));
@@ -368,7 +375,9 @@ function App() {
   const dismissModal: MouseEventHandler<HTMLDivElement> = (
     ev: React.MouseEvent<HTMLDivElement>
   ) => {
-    const modal = (ev.target as HTMLElement).closest("dialog") as HTMLDialogElement;
+    const modal = (ev.target as HTMLElement).closest(
+      "dialog"
+    ) as HTMLDialogElement;
     modal.close();
   };
 
